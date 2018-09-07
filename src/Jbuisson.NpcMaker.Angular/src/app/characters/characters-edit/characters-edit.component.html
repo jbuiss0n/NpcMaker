@@ -1,0 +1,43 @@
+<div class="heading">
+  <div class="heading-name">
+    <input type="text" name="Name" [(ngModel)]="Name" placeholder="Name" required />
+  </div>
+  <div class="heading-race">
+    <input type="text" name="Race" [(ngModel)]="Race" placeholder="Race" />
+    <select name="Gender" [(ngModel)]="Gender">
+      <option value="">Neutral</option>
+      <option value="1">Female</option>
+      <option value="0">Male</option>
+    </select>
+  </div>
+</div>
+<svg height="5" width="400">
+  <polyline points="0,0 400,2.5 0,5"></polyline>
+</svg>
+<character-property Name="Armor Class" [Description]="Character.ArmorClass"></character-property>
+<character-property Name="Hit Points" [Description]="Character.HitPoints"></character-property>
+<character-property Name="Speed" [Description]="Character.Speed"></character-property>
+<svg height="5" width="400">
+  <polyline points="0,0 400,2.5 0,5"></polyline>
+</svg>
+<character-statistics [Strength]="Character.Strength"
+                      [Dexterity]="Character.Dexterity"
+                      [Constitution]="Character.Constitution"
+                      [Intelligence]="Character.Intelligence"
+                      [Wisdom]="Character.Wisdom"
+                      [Charisma]="Character.Charisma"></character-statistics>
+<svg height="5" width="400">
+  <polyline points="0,0 400,2.5 0,5"></polyline>
+</svg>
+<character-property *ngFor="let property of Character.Properties" [Name]="property.Name" [Description]="property.Description"></character-property>
+<svg height="5" width="400">
+  <polyline points="0,0 400,2.5 0,5"></polyline>
+</svg>
+<character-ability *ngFor="let ability of Character.Abilities" [Name]="ability.Name" [Description]="ability.Description"></character-ability>
+<!--<div class="property-title">
+  <h3>Actions</h3>
+</div>
+<div class="property-block">
+  <h4>Divine Eminence.</h4>
+  <p>As a bonus action, Undril can expend a spell slot to cause its melee weapon attacks to magically deal an extra 10 (3d6) radiant damage to a target on a hit. This benefit lasts until the end of the turn . If Undril expends a spell slot of 2nd level or higher, the extra damage increases by ld6 for each level above 1st.</p>
+</div>-->

@@ -1,0 +1,43 @@
+@import '../../../assets/styles/variables.less';
+
+:host {
+  font-family: @font-content;
+  display: block;
+  margin: 20px;
+  font-size: 13.5px;
+  background: @card-background;
+  position: relative;
+  width: 400px;
+  padding: 8px;
+  border: 1px #DDD solid;
+  box-shadow: 0 0 1.5em #867453;
+
+  svg {
+    fill: @separator;
+    stroke: @separator;
+    margin-top: 7px;
+    margin-bottom: 3px;
+  }
+
+  .heading {
+    &-name {
+      margin: 5px 0;
+
+      input {
+        width: 100%;
+        font-size: 16px;
+        line-height: 20px;
+        font-family: @font-title;
+        box-sizing: border-box;
+
+        &:invalid {
+          opacity: .5;
+        }
+      }
+    }
+
+    &-race {
+
+    }
+  }
+}
