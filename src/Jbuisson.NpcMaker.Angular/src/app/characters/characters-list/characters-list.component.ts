@@ -17,8 +17,8 @@ export class CharactersListComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    var data = await this.route.data.toPromise();
-
-    this.Characters = data['Characters'];
+    this.route.data.subscribe(data => {
+      this.Characters = data['Characters'];
+    });
   }
 }
