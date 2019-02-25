@@ -13,16 +13,16 @@
 
 ## Initiative table
 
-- [] Create a new initiative *Table*
-- [] Add *Element* to *Table*
-- [] Pass *Element* turn
-- [] Iterate over next *Elements* in initiative order
-- [] Remove *Element* from *Table*
-- [] Iterate over *Rounds*
-- [] Add event triggered on specified *Round* on *Table*
-- [] Trigger event on *Round* by initiative order
-- [] Remove event from *Table*
-- [] Keep tracks of removed *Element*
+- [x] Create a new initiative *Table*
+- [x] Add *Element* to *Table*
+- [x] Pass *Element* turn
+- [x] Iterate over next *Elements* in initiative order
+- [x] Remove *Element* from *Table*
+- [x] Iterate over *Rounds*
+- [x] Add event triggered on specified *Round* on *Table*
+- [x] Trigger event on *Round* by initiative order
+- [x] Remove event from *Table*
+- [x] Keep tracks of removed *Element*
 - [] Add Multiple *Element* of the same type to *Table* at once
 
 ## Creatures and Players
