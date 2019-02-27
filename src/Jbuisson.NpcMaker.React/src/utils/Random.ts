@@ -9,18 +9,20 @@ export class Random {
   }
 
   public static parse(input: string = '3D6+4'): number {
-    const dices = input.match(/([0-9]*)D([0-9]+)(?:(([+-])([0-9]*)D([0-9]+))*)?/i);
+    const reg = /(?<count>[0-9])*D(?<dice>[0-9]+)+?/ig;
+    let roll = 0, expression;
 
-    console.log(dices);
+    while (expression = reg.exec(input)) {
+      const dice = Number(expression.groups!['dice']);
+      const count = Number(expression.groups!['count']) || 1;
+      const rand = Random.Roll(dice, count)
 
-    if (dices) {
-      return dices
-        .map(d => Number(d.substring(1)))
-        .map(Random.RollSingleDice)
-        .reduce((sum, current) => (sum || 0) + current);
+      // console.log(`${count}D${dice}=${rand}`);
+
+      roll += rand;
     }
 
-    return 0;
+    return roll;
   }
 
   public static D4(count: number = 1): number {
@@ -50,7 +52,7 @@ export class Random {
   private static Roll(dice: number, count: number) {
     let result = 0;
     for (let i = 0; i < count; i++) {
-      result += this.RollSingleDice(dice);
+      result += Random.RollSingleDice(dice);
     }
     return result;
   }
