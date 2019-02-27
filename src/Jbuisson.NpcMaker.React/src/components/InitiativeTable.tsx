@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState, FormEvent } from 'react';
 import InitiativeElement, { IInitiativeElement } from './InitiativeItem';
-import ITrigger from '../models/ITrigger';
-import IMobile from '../models/IMobile';
+import Trigger from '../models/Trigger';
+import Mobile from '../models/Mobile';
 import Random from '../utils/Random';
 
 const InitiativeTable: FunctionComponent = () => {
@@ -10,11 +10,11 @@ const InitiativeTable: FunctionComponent = () => {
   const [newTriggerRound, setNewTriggerRound] = useState(0);
 
   const [round, setRound] = useState(0);
-  const [triggers, setTriggers] = useState<Array<ITrigger>>([]);
+  const [triggers, setTriggers] = useState<Array<Trigger>>([]);
   const [elements, setElements] = useState<Array<IInitiativeElement>>([]);
   const [removedElements, setRemovedElements] = useState<Array<IInitiativeElement>>([]);
 
-  const resetMobile = (newElementName: string): IMobile => {
+  const resetMobile = (newElementName: string): Mobile => {
     return { Name: newElementName, ActionUsed: false, BonusActionUsed: false, ReactionUsed: false };
   }
 
@@ -28,7 +28,7 @@ const InitiativeTable: FunctionComponent = () => {
 
   const addElement = (event: FormEvent) => {
     const initiative = Random.D20();
-    const mobile: IMobile = resetMobile(newElementName);
+    const mobile: Mobile = resetMobile(newElementName);
 
     setElements([...elements, { Item: mobile, Initiative: initiative }]);
     setNewElementName('');
@@ -53,7 +53,7 @@ const InitiativeTable: FunctionComponent = () => {
     });
   }
 
-  const onEndTurn = (item: IMobile | ITrigger) => {
+  const onEndTurn = (item: Mobile | Trigger) => {
     const index = elements.findIndex(el => el.Item.Name === item.Name);
     elements[index] = { ...elements[index], Item: { ...item } };
 
@@ -65,7 +65,7 @@ const InitiativeTable: FunctionComponent = () => {
     }
   }
 
-  const onRemoveElement = (item: IMobile | ITrigger) => {
+  const onRemoveElement = (item: Mobile | Trigger) => {
     const index = elements.findIndex(element => element.Item.Name === item.Name);
     if (index < 0)
       return;
@@ -74,8 +74,8 @@ const InitiativeTable: FunctionComponent = () => {
     setRemovedElements([...removedElements, elements[index]]);
   }
 
-  const hasActionLeft = (item: IMobile | ITrigger) => {
-    const mobile = item as IMobile;
+  const hasActionLeft = (item: Mobile | Trigger) => {
+    const mobile = item as Mobile;
     return item && (!mobile.ActionUsed || !mobile.BonusActionUsed);
   }
 

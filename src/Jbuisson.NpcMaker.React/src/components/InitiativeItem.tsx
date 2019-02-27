@@ -1,47 +1,45 @@
 import React, { FunctionComponent, useState, MouseEvent } from 'react';
-import IMobile from '../models/IMobile';
-import ITrigger from '../models/ITrigger';
+import Mobile from '../models/Mobile';
+import Trigger from '../models/Trigger';
 
 export interface IInitiativeElement {
-  Item: IMobile | ITrigger;
+  Item: Mobile | Trigger;
   Initiative: number;
 
-  OnEndTurn?: (item: IMobile | ITrigger) => void;
-  OnRemoveElement?: (item: IMobile | ITrigger) => void;
+  OnEndTurn?: (item: Mobile | Trigger) => void;
+  OnRemoveElement?: (item: Mobile | Trigger) => void;
 }
 
 const InitiativeElement: FunctionComponent<IInitiativeElement> = (props) => {
   const { Item, Initiative } = props;
-  const Mobile = Item as IMobile;
-  const Trigger = Item as ITrigger;
 
   const endTurn = (e: MouseEvent) => {
-    if (!props.OnEndTurn || !Mobile)
+    if (!props.OnEndTurn || !(Item instanceof Mobile))
       return;
 
     if (e.ctrlKey && e.altKey)
       return props.OnRemoveElement && props.OnRemoveElement(Item);
 
     if (e.ctrlKey)
-      Mobile.ActionUsed = true;
+      Item.ActionUsed = true;
 
     if (e.shiftKey)
-      Mobile.BonusActionUsed = true;
+      Item.BonusActionUsed = true;
 
     if (e.altKey)
-      Mobile.ReactionUsed = true;
+      Item.ReactionUsed = true;
 
-    props.OnEndTurn(Mobile);
+    props.OnEndTurn(Item);
   }
 
   return (
     <div className="initiative-item" onClick={endTurn}>
       {Initiative} : {Item.Name}
       (
-        {Trigger && Trigger.Round}
-        {Mobile && !Mobile.ActionUsed ? 'A' : ''}
-        {Mobile && !Mobile.BonusActionUsed ? 'B' : ''}
-        {Mobile && !Mobile.ReactionUsed ? 'R' : ''}
+        {Item instanceof Trigger && Item.Round}
+        {Item instanceof Mobile && !Item.ActionUsed ? 'A' : ''}
+        {Item instanceof Mobile && !Item.ReactionUsed ? 'R' : ''}
+        {Item instanceof Mobile && !Item.BonusActionUsed ? 'B' : ''}
       )
     </div>
   );
