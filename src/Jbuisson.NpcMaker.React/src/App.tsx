@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import InitiativeTable from './components/InitiativeTable';
+import React from 'react';
+import Board from './components/Board';
 
-class App extends Component {
+class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <InitiativeTable />
+        <Board />
       </div>
     );
   }

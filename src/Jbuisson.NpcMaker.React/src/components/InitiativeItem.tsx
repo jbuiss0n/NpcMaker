@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, MouseEvent } from 'react';
+import React from 'react';
 import Mobile from '../models/Mobile';
 
 export interface IInitiativeElement {
@@ -9,10 +9,10 @@ export interface IInitiativeElement {
   OnRemoveElement?: (item: Mobile) => void;
 }
 
-const InitiativeElement: FunctionComponent<IInitiativeElement> = (props) => {
+const InitiativeElement: React.FunctionComponent<IInitiativeElement> = (props) => {
   const { Mobile, Initiative } = props;
 
-  const endTurn = (e: MouseEvent) => {
+  const endTurn = (e: React.MouseEvent) => {
     if (e.ctrlKey && e.altKey)
       return props.OnRemoveElement && props.OnRemoveElement(Mobile);
 
@@ -31,12 +31,7 @@ const InitiativeElement: FunctionComponent<IInitiativeElement> = (props) => {
   return (
     <div className="initiative-item" onClick={endTurn}>
       {Initiative} ({Mobile.Initiative}) : {Mobile.Name}
-      (
-        {/* {Item instanceof Trigger && Item.Round} */}
-      {!Mobile.ActionUsed ? 'A' : ''}
-      {!Mobile.ReactionUsed ? 'R' : ''}
-      {!Mobile.BonusActionUsed ? 'B' : ''}
-      )
+      ({!Mobile.ActionUsed ? 'A' : ''}{!Mobile.ReactionUsed ? 'R' : ''}{!Mobile.BonusActionUsed ? 'B' : ''})
     </div>
   );
 }

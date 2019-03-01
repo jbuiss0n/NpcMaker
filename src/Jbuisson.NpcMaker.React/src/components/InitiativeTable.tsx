@@ -1,12 +1,11 @@
-import React, { FunctionComponent, useState, FormEvent, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import InitiativeElement, { IInitiativeElement } from './InitiativeItem';
 import Trigger from '../models/Trigger';
 import Mobile from '../models/Mobile';
-import Creature from '../models/Creature';
 import Random from '../utils/Random';
 import MobileService from '../services/MobileService';
 
-const InitiativeTable: FunctionComponent = () => {
+const InitiativeTable: React.FunctionComponent = () => {
   const [round, setRound] = useState(0);
   const [creatureSearch, setCreatureSearch] = useState('');
   const [newTriggerName, setNewTriggerName] = useState('');
@@ -26,7 +25,7 @@ const InitiativeTable: FunctionComponent = () => {
     return mobile;
   }
 
-  const addTrigger = (event: FormEvent) => {
+  const addTrigger = (event: React.FormEvent) => {
     setTriggers([...triggers, { Name: newTriggerName, Round: newTriggerRound }]);
     setNewTriggerName('');
     setNewTriggerRound(0);
@@ -93,7 +92,7 @@ const InitiativeTable: FunctionComponent = () => {
     setElements(newRoundMobiles);
   }
 
-  const onCreatureSearchChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const onCreatureSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     const creatures = await MobileService.AutoComplete(term);
     setCreatureComplete(creatures);
