@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Mobile from '../models/Mobile';
+import InitiativeTable from './InitiativeTable';
+import { EncounterContextProvider } from '../contexts/EncounterContext';
 
 const Board: React.FunctionComponent = () => {
+
+  const [focusMobile, setFocusMobile] = useState<Mobile | null>(null);
+
   return (
-    <div className="board">
-      <div className="initiative-table">
-
+    <EncounterContextProvider value={focusMobile}>
+      <div className="board">
+        <InitiativeTable onFocusMobile={setFocusMobile} />
+        <div className="focus">
+          {focusMobile && focusMobile.Name}
+        </div>
       </div>
-      <div className="mobile">
-
-      </div>
-    </div>
+    </EncounterContextProvider>
   );
 }
 

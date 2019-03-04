@@ -1,6 +1,5 @@
 import Attribute from './Attribute';
 import Entity from './Entity';
-import Item from './Item';
 
 export const ProficiendyTable = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 6];
 

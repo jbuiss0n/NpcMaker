@@ -1,15 +1,16 @@
 import Mobile from '../models/Mobile';
 import Creature from '../models/Creature';
 
-export class MobileService {
-  private static m_mobiles: Mobile[] = [
-    MobileService.Creature('Yuan-Ti Malison', 66, 16, 14, 13, 14, 12, 16),
-    MobileService.Creature('Yuan-Ti Pureblood', 40, 11, 10, 11, 13, 12, 14),
+export class MobileFactory {
+  private static m_mobiles: (() => Mobile)[] = [
+    () => MobileFactory.Creature('Yuan-Ti Malison', 66, 16, 14, 13, 14, 12, 16),
+    () => MobileFactory.Creature('Yuan-Ti Pureblood', 40, 11, 10, 11, 13, 12, 14),
   ];
 
   public static AutoComplete(term: string): Promise<Mobile[]> {
-    const mobiles = MobileService.m_mobiles
-      .filter(mobile => mobile.Name.toLowerCase().startsWith(term.toLowerCase()));
+    const mobiles = MobileFactory.m_mobiles
+    .map(mobile => mobile())
+    .filter(mobile => mobile.Name.toLowerCase().startsWith(term.toLowerCase()));
       
     return Promise.resolve(mobiles);
   }
@@ -28,4 +29,4 @@ export class MobileService {
   }
 }
 
-export default MobileService;
+export default MobileFactory;

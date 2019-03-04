@@ -30,7 +30,7 @@ const InitiativeElement: React.FunctionComponent<IInitiativeElement> = (props) =
 
   return (
     <div className="initiative-item" onClick={endTurn}>
-      {Initiative} ({Mobile.Initiative}) : {Mobile.Name}
+      {Initiative} ({Mobile.Initiative}) : {Mobile.Name} - {Mobile.Serial}
       ({!Mobile.ActionUsed ? 'A' : ''}{!Mobile.ReactionUsed ? 'R' : ''}{!Mobile.BonusActionUsed ? 'B' : ''})
     </div>
   );

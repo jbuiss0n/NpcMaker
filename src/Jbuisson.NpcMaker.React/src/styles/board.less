@@ -1,0 +1,28 @@
+@initiative-table-width: 300px;
+
+.board {
+  display: flex;
+
+  .initiative {
+    &-table {
+      padding: 5px;
+      width: @initiative-table-width;
+  
+      &-items {
+        &.removed {
+          text-decoration: line-through;
+        }
+      }
+    }
+  
+    &-item {
+      padding: 5px;
+      margin: 2px 0;
+      border: 1px solid #242424;
+    }
+  }
+
+  .focus {
+    width: calc(~'100% - @{initiative-table-width}');
+  }
+}

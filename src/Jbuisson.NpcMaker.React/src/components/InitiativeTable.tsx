@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import InitiativeElement, { IInitiativeElement } from './InitiativeItem';
+import List from './shared/List';
 import Trigger from '../models/Trigger';
 import Mobile from '../models/Mobile';
 import Random from '../utils/Random';
-import MobileService from '../services/MobileService';
+import MobileFactory from '../services/MobileFactory';
 
-const InitiativeTable: React.FunctionComponent = () => {
+export interface InitiativeTableProps {
+  onFocusMobile: (mobile: Mobile) => void;
+  onNewRoundStarted?: (round: number) => void;
+}
+
+const InitiativeTable: React.FunctionComponent<InitiativeTableProps> = (props) => {
   const [round, setRound] = useState(0);
   const [creatureSearch, setCreatureSearch] = useState('');
   const [newTriggerName, setNewTriggerName] = useState('');
@@ -37,27 +43,27 @@ const InitiativeTable: React.FunctionComponent = () => {
     setElements([...elements, { Mobile: mobile, Initiative: Random.D20() + mobile.Initiative }]);
     setCreatureComplete([]);
     setCreatureSearch('');
+
+    props.onFocusMobile(mobile);
   }
 
-  const orderInitiativeTable = () => {
-    return elements.sort((a, b) => {
-      if ((hasActionLeft(a.Mobile) && hasActionLeft(b.Mobile)) || (!hasActionLeft(a.Mobile) && !hasActionLeft(b.Mobile)))
-        return b.Mobile.Initiative - a.Mobile.Initiative;
+  const sortByInitiative = (a: IInitiativeElement, b: IInitiativeElement): number => {
+    if ((hasActionLeft(a.Mobile) && hasActionLeft(b.Mobile)) || (!hasActionLeft(a.Mobile) && !hasActionLeft(b.Mobile)))
+      return b.Mobile.Initiative - a.Mobile.Initiative;
 
-      if (!hasActionLeft(a.Mobile)) {
-        return 1;
-      }
+    if (!hasActionLeft(a.Mobile)) {
+      return 1;
+    }
 
-      if (!hasActionLeft(b.Mobile)) {
-        return -1;
-      }
+    if (!hasActionLeft(b.Mobile)) {
+      return -1;
+    }
 
-      return 0;
-    });
+    return 0;
   }
 
   const onEndTurn = (mobile: Mobile) => {
-    const index = elements.findIndex(el => el.Mobile.Name === mobile.Name);
+    const index = elements.findIndex(el => el.Mobile.Serial === mobile.Serial);
     elements[index] = { ...elements[index], Mobile: mobile };
 
     if (elements.every(el => !hasActionLeft(el.Mobile))) {
@@ -69,7 +75,7 @@ const InitiativeTable: React.FunctionComponent = () => {
   }
 
   const onRemoveElement = (item: Mobile) => {
-    const index = elements.findIndex(element => element.Mobile.Name === item.Name);
+    const index = elements.findIndex(element => element.Mobile.Serial === item.Serial);
     if (index < 0)
       return;
 
@@ -94,31 +100,42 @@ const InitiativeTable: React.FunctionComponent = () => {
 
   const onCreatureSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
-    const creatures = await MobileService.AutoComplete(term);
+    const creatures = await MobileFactory.AutoComplete(term);
     setCreatureComplete(creatures);
     setCreatureSearch(term);
+  }
+
+  const renderTrigger = (element: Trigger) => {
+    return <div>{element.Name}</div>;
+  }
+
+  const renderActiveElement = (element: IInitiativeElement) => {
+    return <InitiativeElement OnRemoveElement={onRemoveElement} OnEndTurn={onEndTurn} {...element} />;
+  }
+
+  const renderRemovedElement = (element: IInitiativeElement) => {
+    return <InitiativeElement {...element} />;
   }
 
   return (
     <div className="initiative-table">
       <h2>Round: {round}</h2>
 
-      <ul className="initiative-table-triggers">
-        {triggers
-          .filter(trigger => trigger.Round >= round)
-          .map(trigger =>
-            <li key={trigger.Name}>{trigger.Name}</li>)}
-      </ul>
+      <List<Trigger>
+        className="initiative-table-triggers"
+        Items={triggers.filter(trigger => trigger.Round >= round)}
+        ItemComponent={renderTrigger} />
 
-      <ul className="initiative-table-items">
-        {orderInitiativeTable().map(element =>
-          <li key={element.Mobile.Name}><InitiativeElement OnRemoveElement={onRemoveElement} OnEndTurn={onEndTurn} {...element} /></li>)}
-      </ul>
+      <List<IInitiativeElement>
+        className="initiative-table-items"
+        Items={elements}
+        ItemComponent={renderActiveElement}
+        SortMethod={sortByInitiative} />
 
-      <ul className="initiative-table-items removed">
-        {removedElements.map(element =>
-          <li key={element.Mobile.Name}><InitiativeElement {...element} /></li>)}
-      </ul>
+      <List<IInitiativeElement>
+        className="initiative-table-items removed"
+        Items={removedElements}
+        ItemComponent={renderRemovedElement} />
 
       <div>
         <h3>Add Creature</h3>
