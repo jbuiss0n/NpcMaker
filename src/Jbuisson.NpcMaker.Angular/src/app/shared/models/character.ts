@@ -20,24 +20,24 @@ export interface ICharacter {
   Abilities: IAbility[];
   Properties: IProperty[];
   SavingThrows: ISavingThrow[];
-};
+}
 
 interface IProperty {
   Name: string;
   Description: string;
-};
+}
 
 interface IAbility {
   Name: string;
   Description: string;
-};
+}
 
 interface ISkill {
   Name: string;
   Modifier: number;
-};
+}
 
 interface ISavingThrow {
   Name: string;
   Modifier: number;
-};
+}

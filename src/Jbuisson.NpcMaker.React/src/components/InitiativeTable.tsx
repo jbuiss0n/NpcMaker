@@ -1,23 +1,35 @@
 import React, { useState } from 'react';
 import InitiativeElement, { IInitiativeElement } from './InitiativeItem';
+import AutoComplete, { IAutoCompleteItem } from './shared/AutoComplete';
 import List from './shared/List';
 import Trigger from '../models/Trigger';
 import Mobile from '../models/Mobile';
 import Random from '../utils/Random';
-import MobileFactory from '../services/MobileFactory';
+import CreatureFactory from '../services/CreatureFactory';
 
-export interface InitiativeTableProps {
+interface InitiativeTableProps {
   onFocusMobile: (mobile: Mobile) => void;
   onNewRoundStarted?: (round: number) => void;
 }
 
+class AutoCompleteMobile implements IAutoCompleteItem {
+
+  public Id: number;
+  public Name: string;
+
+  public Mobile: Mobile;
+
+  constructor(mobile: Mobile) {
+    this.Id = mobile.Serial;
+    this.Name = mobile.Name;
+    this.Mobile = mobile;
+  }
+}
+
 const InitiativeTable: React.FunctionComponent<InitiativeTableProps> = (props) => {
   const [round, setRound] = useState(0);
-  const [creatureSearch, setCreatureSearch] = useState('');
   const [newTriggerName, setNewTriggerName] = useState('');
   const [newTriggerRound, setNewTriggerRound] = useState(0);
-
-  const [creatureComplete, setCreatureComplete] = useState<Array<Mobile>>([]);
 
   const [triggers, setTriggers] = useState<Array<Trigger>>([]);
   const [elements, setElements] = useState<Array<IInitiativeElement>>([]);
@@ -39,17 +51,15 @@ const InitiativeTable: React.FunctionComponent<InitiativeTableProps> = (props) =
     event.preventDefault();
   }
 
-  const addMobile = (mobile: Mobile) => {
+  const addMobile = (autoCompleteResult: AutoCompleteMobile) => {
+    const mobile = autoCompleteResult.Mobile;
     setElements([...elements, { Mobile: mobile, Initiative: Random.D20() + mobile.Initiative }]);
-    setCreatureComplete([]);
-    setCreatureSearch('');
-
     props.onFocusMobile(mobile);
   }
 
   const sortByInitiative = (a: IInitiativeElement, b: IInitiativeElement): number => {
     if ((hasActionLeft(a.Mobile) && hasActionLeft(b.Mobile)) || (!hasActionLeft(a.Mobile) && !hasActionLeft(b.Mobile)))
-      return b.Mobile.Initiative - a.Mobile.Initiative;
+      return b.Initiative - a.Initiative;
 
     if (!hasActionLeft(a.Mobile)) {
       return 1;
@@ -98,15 +108,13 @@ const InitiativeTable: React.FunctionComponent<InitiativeTableProps> = (props) =
     setElements(newRoundMobiles);
   }
 
-  const onCreatureSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value;
-    const creatures = await MobileFactory.AutoComplete(term);
-    setCreatureComplete(creatures);
-    setCreatureSearch(term);
+  const onCreatureSearch = async (term: string) => {
+    return CreatureFactory.AutoComplete(term)
+      .then(mobiles => mobiles.map(mobile => new AutoCompleteMobile(mobile)));
   }
 
-  const renderTrigger = (element: Trigger) => {
-    return <div>{element.Name}</div>;
+  const renderItem = (item: Mobile | Trigger) => {
+    return <div>{item.Name}</div>;
   }
 
   const renderActiveElement = (element: IInitiativeElement) => {
@@ -124,7 +132,7 @@ const InitiativeTable: React.FunctionComponent<InitiativeTableProps> = (props) =
       <List<Trigger>
         className="initiative-table-triggers"
         Items={triggers.filter(trigger => trigger.Round >= round)}
-        ItemComponent={renderTrigger} />
+        ItemComponent={renderItem} />
 
       <List<IInitiativeElement>
         className="initiative-table-items"
@@ -138,6 +146,14 @@ const InitiativeTable: React.FunctionComponent<InitiativeTableProps> = (props) =
         ItemComponent={renderRemovedElement} />
 
       <div>
+        <h3>Add creature</h3>
+        <AutoComplete<AutoCompleteMobile>
+          OnSelectItem={addMobile}
+          OnSearch={onCreatureSearch}
+          ItemComponent={renderItem} />
+      </div>
+
+      {/* <div>
         <h3>Add Creature</h3>
         <input type="text" value={creatureSearch} onChange={onCreatureSearchChange} />
         {!!creatureComplete && !!creatureComplete.length && (
@@ -145,7 +161,7 @@ const InitiativeTable: React.FunctionComponent<InitiativeTableProps> = (props) =
             {creatureComplete.map(creature => <li key={creature.Name} onClick={() => addMobile(creature)}>{creature.Name}</li>)}
           </ul>
         )}
-      </div>
+      </div> */}
 
       {/* <div>
         <h3>Add Trigger</h3>
