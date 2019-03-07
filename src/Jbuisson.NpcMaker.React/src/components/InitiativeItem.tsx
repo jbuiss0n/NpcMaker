@@ -5,8 +5,8 @@ export interface IInitiativeElement {
   Mobile: Mobile;
   Initiative: number;
 
-  OnEndTurn?: (item: Mobile) => void;
-  OnRemoveElement?: (item: Mobile) => void;
+  OnEndTurn?: (item: IInitiativeElement) => void;
+  OnRemoveElement?: (item: IInitiativeElement) => void;
 }
 
 const InitiativeElement: React.FunctionComponent<IInitiativeElement> = (props) => {
@@ -14,18 +14,19 @@ const InitiativeElement: React.FunctionComponent<IInitiativeElement> = (props) =
 
   const endTurn = (e: React.MouseEvent) => {
     if (e.ctrlKey && e.altKey)
-      return props.OnRemoveElement && props.OnRemoveElement(Mobile);
+      return props.OnRemoveElement && props.OnRemoveElement(props);
 
     if (e.ctrlKey)
-      Mobile.ActionUsed = true;
+      return Mobile.UseAction();
 
     if (e.shiftKey)
-      Mobile.BonusActionUsed = true;
+      return Mobile.UseBonusAction();
 
     if (e.altKey)
-      Mobile.ReactionUsed = true;
+      return Mobile.UseReaction();
 
-    props.OnEndTurn && props.OnEndTurn(Mobile);
+    Mobile.EndTurn();
+    props.OnEndTurn && props.OnEndTurn(props);
   }
 
   return (

@@ -9,7 +9,7 @@ export interface IAutoCompleteItem {
 interface IAutoCompleteProps<T extends IAutoCompleteItem> extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 
-  ItemComponent: any;
+  ItemComponent?: any;
 
   OnSearch: (term: string) => Promise<T[]>;
   OnSelectItem: (item: T) => void;
@@ -21,6 +21,8 @@ interface IAutoCompleteState<T> {
 }
 
 export class AutoComplete<T extends IAutoCompleteItem> extends React.Component<IAutoCompleteProps<T>, IAutoCompleteState<T>> {
+
+
   render() {
     const {
       className,
@@ -55,7 +57,7 @@ export class AutoComplete<T extends IAutoCompleteItem> extends React.Component<I
     return (
       <div className={className}>
         <input type="text" value={Term} onChange={onChange} />
-        <List<T> Items={Items} ItemComponent={renderItem} />
+        <List<T> Items={Items} ItemComponent={ItemComponent || renderItem} />
       </div>
     );
   }

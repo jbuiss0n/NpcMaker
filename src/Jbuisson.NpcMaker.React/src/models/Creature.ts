@@ -1,4 +1,5 @@
 import Mobile from './Mobile';
+import ICharacter from './ICharacter';
 
 export class Creature extends Mobile {
 
@@ -15,8 +16,8 @@ export class Creature extends Mobile {
     return Math.min(1, this.ChallengeRating);
   }
 
-  constructor(name: string) {
-    super(name)
+  constructor(character: ICharacter) {
+    super(character)
   }
 }
 
