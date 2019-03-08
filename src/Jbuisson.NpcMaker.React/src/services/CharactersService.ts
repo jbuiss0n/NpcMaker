@@ -27,7 +27,7 @@ const CHARACTERS: ICharacter[] = [
   Create('Yuan-Ti Pureblood', 40, 11, 10, 11, 13, 12, 14),
 ]
 
-export class CharactersServices {
+export class CharactersService {
   public static Find(id: number): Promise<ICharacter | undefined> {
     return Promise.resolve(CHARACTERS.find(character => character.Id == id));
   }
@@ -37,4 +37,4 @@ export class CharactersServices {
   }
 }
 
-export default CharactersServices;
+export default CharactersService;

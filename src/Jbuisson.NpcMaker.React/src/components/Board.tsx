@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
+import { IEncounterContext, EncounterContextProvider, DefaultContext } from '../contexts/EncounterContext';
 import Mobile from '../models/Mobile';
 import InitiativeTable from './InitiativeTable';
-import { EncounterContextProvider } from '../contexts/EncounterContext';
 
 const Board: React.FunctionComponent = () => {
 
-  const [focusMobile, setFocusMobile] = useState<Mobile | null>(null);
+  const [context, setContext] = useState<IEncounterContext>(DefaultContext);
+  const [selectedMobile, setSelectedMobile] = useState<Mobile | undefined>(undefined);
+
+  context.OnMobileSelect = (mobile) => {
+    setSelectedMobile(mobile);
+  }
 
   return (
-    <EncounterContextProvider value={focusMobile}>
+    <EncounterContextProvider value={context}>
       <div className="board">
-        <InitiativeTable onFocusMobile={setFocusMobile} />
-        <div className="focus">
-          {focusMobile && focusMobile.Name}
-        </div>
+        <aside>
+          <InitiativeTable />
+        </aside>
+        <section className="screen">
+          <h2>Round: {context.Round}</h2>
+          <section className="selected-mobile">{selectedMobile && selectedMobile.Name}</section>
+        </section>
       </div>
     </EncounterContextProvider>
   );
