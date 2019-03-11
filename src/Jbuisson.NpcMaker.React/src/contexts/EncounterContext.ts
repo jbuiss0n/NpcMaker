@@ -1,7 +1,5 @@
 import React from 'react';
 import Mobile from '../models/Mobile';
-import Creature from '../models/Creature';
-import CharactersService from '../services/CharactersService';
 
 export interface IEncounterContext {
   Round: number;

@@ -1,52 +1,62 @@
 import React from 'react';
 import EncounterContext from '../contexts/EncounterContext';
-import InitiativeElement, { IInitiativeElement } from './InitiativeItem';
 import List from './shared/List';
-import Random from '../utils/Random';
+import Mobile from '../models/Mobile';
 
 export class InitiativeTable extends React.Component {
   context!: React.ContextType<typeof EncounterContext>;
 
+  constructor(props = {}) {
+    super(props);
+    
+    this.initiativeSort = this.initiativeSort.bind(this);
+    this.renderInitiativeElement = this.renderInitiativeElement.bind(this);
+  }
+
+  initiativeSort(a: Mobile, b: Mobile): number {
+    if ((a.ActionLeft && b.ActionLeft) || (!a.ActionLeft && !b.ActionLeft))
+      return b.Initiative - a.Initiative;
+
+    if (!a.ActionLeft) {
+      return 1;
+    }
+
+    if (!b.ActionLeft) {
+      return -1;
+    }
+
+    return 0;
+  }
+
+  renderInitiativeElement(mobile: Mobile) {
+    return (
+      <div className="initiative-item" onClick={() => this.context.OnMobileSelect(mobile)}>
+        {mobile.Initiative} ({mobile.Dexterity.Modifier}) : {mobile.Name} - {mobile.Serial}
+        ({!mobile.ActionUsed ? 'A' : ''}{!mobile.ReactionUsed ? 'R' : ''}{!mobile.BonusActionUsed ? 'B' : ''})
+      </div>);
+  }
+
   render() {
     const activeMobiles = this.context.Mobiles
       .filter(mobile => mobile.CurrentHitPoints > 0)
-      .map(mobile => ({ Mobile: mobile, Initiative: Random.D20() + mobile.Initiative }));
+      .map(mobile => ({ Item: mobile }));
 
     const deadMobiles = this.context.Mobiles
       .filter(mobile => mobile.CurrentHitPoints <= 0)
-      .map(mobile => ({ Mobile: mobile, Initiative: 0 }));
-
-    const initiativeSort = (a: IInitiativeElement, b: IInitiativeElement): number => {
-      if ((a.Mobile.ActionLeft && b.Mobile.ActionLeft) || (!a.Mobile.ActionLeft && !b.Mobile.ActionLeft))
-        return b.Initiative - a.Initiative;
-
-      if (!a.Mobile.ActionLeft) {
-        return 1;
-      }
-
-      if (!b.Mobile.ActionLeft) {
-        return -1;
-      }
-
-      return 0;
-    }
-
-    const renderInitiativeElement = (element: IInitiativeElement) => {
-      return <InitiativeElement {...element} />;
-    }
+      .map(mobile => ({ Item: mobile }));
 
     return (
       <div className="initiative-table">
-        <List<IInitiativeElement>
+        {/* <List<Mobile>
           className="initiative-table-items"
           Items={activeMobiles}
-          ItemComponent={renderInitiativeElement}
-          SortMethod={initiativeSort} />
+          ItemComponent={this.renderInitiativeElement}
+          SortMethod={this.initiativeSort} />
 
-        <List<IInitiativeElement>
+        <List<Mobile>
           className="initiative-table-items removed"
           Items={deadMobiles}
-          ItemComponent={renderInitiativeElement} />
+          ItemComponent={this.renderInitiativeElement} /> */}
       </div>
     );
   }

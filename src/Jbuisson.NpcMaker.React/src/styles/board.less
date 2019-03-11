@@ -1,20 +1,42 @@
-@initiative-table-width: 300px;
+@control-width: 250px;
+@initiative-width: 300px;
 
 .board {
-  display: flex;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template:
+    [header-left] "head    head    head"       50px  [header-right]
+    [main-left]   "control screen  initiative" 1fr   [main-right]
+    [footer-left] "control foot    initiative" 20px  [footer-right]
+    / @control-width 1fr @initiative-width;
+
+  .head {
+    grid-area: head;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .control{
+    grid-area: control;
+    border:1px solid #242424;
+  }
 
   .initiative {
+    grid-area: initiative;
+    border:1px solid #242424;
+
     &-table {
       padding: 5px;
-      width: @initiative-table-width;
-  
+
       &-items {
         &.removed {
           text-decoration: line-through;
         }
       }
     }
-  
+
     &-item {
       padding: 5px;
       margin: 2px 0;
@@ -22,7 +44,14 @@
     }
   }
 
-  .focus {
-    width: calc(~'100% - @{initiative-table-width}');
+  .screen {
+    grid-area: screen;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .selected-mobile {
+    grid-area: screen;
   }
 }

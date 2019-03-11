@@ -2,8 +2,8 @@ export interface ICharacter {
   Id: number;
 
   Name: string;
-  Gender: boolean;
   Race: string;
+  Gender?: boolean;
 
   Experience: number;
   HitPoints: number;

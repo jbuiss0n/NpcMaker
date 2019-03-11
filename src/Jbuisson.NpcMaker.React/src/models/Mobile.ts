@@ -1,10 +1,13 @@
 import Attribute from './Attribute';
 import Entity from './Entity';
 import ICharacter from './ICharacter';
+import Random from '../utils/Random';
 
 export const ProficiendyTable = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 6];
 
 export abstract class Mobile extends Entity {
+
+  private m_rolledInitative = 0;
 
   private m_turnEnded: boolean = false;
   private m_actionUsed: boolean = false;
@@ -17,19 +20,23 @@ export abstract class Mobile extends Entity {
 
   public get ActionUsed(): boolean {
     return this.m_actionUsed;
-  };
+  }
+
   public get ReactionUsed(): boolean {
     return this.m_reactionUsed;
-  };
+  }
+
   public get BonusActionUsed(): boolean {
     return this.m_bonusActionUsed;
-  };
+  }
 
   public get ActionLeft(): boolean {
     return !this.ActionUsed || !this.BonusActionUsed;
   }
 
   public Name: string;
+  public Race: string;
+  public Gender?: boolean;
 
   public Experience: number;
   public abstract get Level(): number;
@@ -42,14 +49,14 @@ export abstract class Mobile extends Entity {
   public FlyingSpeed: number;
 
   public get Initiative(): number {
-    return this.Dexterity.Modifier;
+    return Math.max(this.m_rolledInitative + this.Dexterity.Modifier, 0);
   }
 
   public get Proficiency(): number {
     return 1 + Math.ceil(this.Level / 4);
   }
 
-  public get ArmorClass(): number {
+  public get ArmorRating(): number {
     return 10 + this.Dexterity.Modifier;
   }
 
@@ -63,6 +70,8 @@ export abstract class Mobile extends Entity {
   constructor(character: ICharacter) {
     super();
     this.Name = character.Name;
+    this.Race = character.Race;
+    this.Gender = character.Gender;
 
     this.Strength = new Attribute(character.Strength);
     this.Dexterity = new Attribute(character.Dexterity);
@@ -111,6 +120,10 @@ export abstract class Mobile extends Entity {
     this.m_actionUsed = false;
     this.m_reactionUsed = false;
     this.m_bonusActionUsed = false;
+  }
+
+  public OnEnterEncounter() {
+    this.m_rolledInitative = Random.D20();
   }
 }
 

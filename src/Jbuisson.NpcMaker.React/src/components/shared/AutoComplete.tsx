@@ -6,58 +6,63 @@ export interface IAutoCompleteItem {
   Name: string;
 }
 
-interface IAutoCompleteProps<T extends IAutoCompleteItem> extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
+interface IAutoCompleteProps {
+  placeholder?: string;
 
-  ItemComponent?: any;
-
-  OnSearch: (term: string) => Promise<T[]>;
-  OnSelectItem: (item: T) => void;
+  OnSearch: (term: string) => Promise<IAutoCompleteItem[]>;
+  OnSelectItem: (item: IAutoCompleteItem) => void;
 }
 
-interface IAutoCompleteState<T> {
+interface IAutoCompleteState {
   Term: string;
-  Items: T[];
+  Items: IAutoCompleteItem[];
 }
 
-export class AutoComplete<T extends IAutoCompleteItem> extends React.Component<IAutoCompleteProps<T>, IAutoCompleteState<T>> {
+class AutoCompleteItem extends React.Component<IAutoCompleteItem> {
 
+  
+  render() {
+    return (<div className="auto-complete-item">{this.props.Name}</div>);
+  }
+}
+
+export class AutoComplete extends React.Component<IAutoCompleteProps, IAutoCompleteState> {
+
+  constructor(props: IAutoCompleteProps) {
+    super(props);
+
+    this.state = { Term: '', Items: [] };
+
+    this.onChange = this.onChange.bind(this);
+    this.onItemClick = this.onItemClick.bind(this);
+  }
+
+  async onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const term = e.target.value;
+    const items = await this.props.OnSearch(term);
+
+    this.setState({ Items: items, Term: term });
+  }
+
+  onItemClick(item: IAutoCompleteItem) {
+    this.props.OnSelectItem(item);
+    this.setState({ Items: [], Term: '' });
+  }
 
   render() {
     const {
-      className,
-
-      ItemComponent,
-
-      OnSearch,
-      OnSelectItem,
+      placeholder,
     } = this.props;
 
     const {
       Term,
       Items,
-    } = this.state || { Term: '', Items: [] };
-
-    const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const term = e.target.value;
-      const items = await OnSearch(term);
-
-      this.setState({ Items: items, Term: term });
-    };
-
-    const onItemClick = (item: T) => {
-      OnSelectItem(item);
-      this.setState({ Items: [], Term: '' });
-    }
-
-    const renderItem = (item: T) => {
-      return <div onClick={() => onItemClick(item)}>{item.Name}</div>;
-    }
+    } = this.state;
 
     return (
-      <div className={className}>
-        <input type="text" value={Term} onChange={onChange} />
-        <List<T> Items={Items} ItemComponent={ItemComponent || renderItem} />
+      <div className="auto_complete">
+        <input type="text" value={Term} onChange={this.onChange} placeholder={placeholder} />
+        <List<IAutoCompleteItem> Items={Items.map(item => ({ Item: item }))} ItemComponent={AutoCompleteItem} />
       </div>
     );
   }

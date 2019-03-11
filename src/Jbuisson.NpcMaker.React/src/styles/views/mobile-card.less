@@ -1,0 +1,56 @@
+@import '../variables.less';
+
+.mobile-card {
+  font-family: @font-content;
+  display: block;
+  margin: 20px;
+  font-size: 13.5px;
+  background: @card-background;
+  position: relative;
+  width: 400px;
+  padding: 8px;
+  border: 1px #DDD solid;
+  box-shadow: 0 0 1.5em #867453;
+
+  svg {
+    fill: @separator;
+    stroke: @separator;
+    margin-top: 7px;
+    margin-bottom: 3px;
+  }
+}
+
+.mobile-property {
+  display: block;
+  color: @main-text;
+  padding: 2px 0;
+
+  h4 {
+    margin: 0;
+    display: inline;
+    font-weight: bold;
+  }
+
+  p {
+    display: inline;
+    text-indent: 0;
+    margin: 0 0 0 5px;
+  }
+}
+
+table {
+  width: 100%;
+  border: 0px;
+  border-collapse: collapse;
+
+  th {
+    color: @main-text;
+    width: 50px;
+    text-align: center;
+  }
+
+  td {
+    width: 50px;
+    text-align: center;
+  }
+}

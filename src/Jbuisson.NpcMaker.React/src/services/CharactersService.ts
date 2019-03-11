@@ -28,8 +28,8 @@ const CHARACTERS: ICharacter[] = [
 ]
 
 export class CharactersService {
-  public static Find(id: number): Promise<ICharacter | undefined> {
-    return Promise.resolve(CHARACTERS.find(character => character.Id == id));
+  public static Find(id: number): Promise<ICharacter> {
+    return Promise.resolve(CHARACTERS.find(character => character.Id == id)!);
   }
 
   public static AutoComplete(term: string): Promise<ICharacter[]> {
