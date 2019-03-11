@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 export interface IListItem<T> {
   Item: T;
@@ -8,8 +8,8 @@ interface IListProps<T> {
   className?: string;
 
   Items: IListItem<T>[];
-  ItemComponent: React.ComponentType<T>;
 
+  RenderItem: (item: T) => React.ReactNode;
   SortMethod?: (a: T, b: T) => number;
 }
 
@@ -18,7 +18,7 @@ export class List<T> extends React.Component<IListProps<T>> {
     const {
       className,
       Items,
-      ItemComponent,
+      RenderItem,
       SortMethod = () => 0,
     } = this.props;
 
@@ -26,7 +26,7 @@ export class List<T> extends React.Component<IListProps<T>> {
       <div className={className}>
         {Items
           .sort((a, b) => SortMethod(a.Item, b.Item))
-          .map((item, index) => <ItemComponent key={index} {...item.Item} />)}
+          .map((item, index) => <Fragment key={index}>{RenderItem(item.Item)}</Fragment>)}
       </div>
     );
   }

@@ -47,16 +47,16 @@ export class InitiativeTable extends React.Component {
 
     return (
       <div className="initiative-table">
-        {/* <List<Mobile>
+        <List<Mobile>
           className="initiative-table-items"
           Items={activeMobiles}
-          ItemComponent={this.renderInitiativeElement}
+          RenderItem={this.renderInitiativeElement}
           SortMethod={this.initiativeSort} />
 
         <List<Mobile>
           className="initiative-table-items removed"
           Items={deadMobiles}
-          ItemComponent={this.renderInitiativeElement} /> */}
+          RenderItem={this.renderInitiativeElement} />
       </div>
     );
   }

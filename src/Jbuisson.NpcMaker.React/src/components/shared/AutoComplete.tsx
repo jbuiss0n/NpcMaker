@@ -18,14 +18,6 @@ interface IAutoCompleteState {
   Items: IAutoCompleteItem[];
 }
 
-class AutoCompleteItem extends React.Component<IAutoCompleteItem> {
-
-  
-  render() {
-    return (<div className="auto-complete-item">{this.props.Name}</div>);
-  }
-}
-
 export class AutoComplete extends React.Component<IAutoCompleteProps, IAutoCompleteState> {
 
   constructor(props: IAutoCompleteProps) {
@@ -34,6 +26,7 @@ export class AutoComplete extends React.Component<IAutoCompleteProps, IAutoCompl
     this.state = { Term: '', Items: [] };
 
     this.onChange = this.onChange.bind(this);
+    this.renderItem = this.renderItem.bind(this);
     this.onItemClick = this.onItemClick.bind(this);
   }
 
@@ -49,6 +42,10 @@ export class AutoComplete extends React.Component<IAutoCompleteProps, IAutoCompl
     this.setState({ Items: [], Term: '' });
   }
 
+  renderItem(item: IAutoCompleteItem) {
+    return (<div className="auto-complete-item" onClick={() => this.onItemClick(item)}>{item.Name}</div>);
+  }
+
   render() {
     const {
       placeholder,
@@ -62,7 +59,10 @@ export class AutoComplete extends React.Component<IAutoCompleteProps, IAutoCompl
     return (
       <div className="auto_complete">
         <input type="text" value={Term} onChange={this.onChange} placeholder={placeholder} />
-        <List<IAutoCompleteItem> Items={Items.map(item => ({ Item: item }))} ItemComponent={AutoCompleteItem} />
+        <List<IAutoCompleteItem>
+          Items={Items.map(item => ({ Item: item }))}
+          RenderItem={this.renderItem}
+        />
       </div>
     );
   }
