@@ -12,6 +12,8 @@ const Board: React.FunctionComponent = () => {
   const [context, setContext] = useState<IEncounterContext>(DefaultContext);
   const [selectedMobile, setSelectedMobile] = useState<Mobile | undefined>(undefined);
 
+  const [creatureForm, setCreatureForm] = useState({ Number: 1, Initiative: 0 });
+
   context.OnMobileSelect = (mobile) => {
     setSelectedMobile(mobile);
   }
@@ -25,15 +27,33 @@ const Board: React.FunctionComponent = () => {
   }
 
   const onSelectCreature = async (item: IAutoCompleteItem) => {
-    const character = await CharactersService.Find(item.Id);
-    const mobile = new Creature(character);
+    let mobiles: Mobile[] = [];
 
-    mobile.OnEnterEncounter();
+    for (let i = 0; i < creatureForm.Number; i++) {
+      const character = await CharactersService.Find(item.Id);
+      const mobile = new Creature(character);
+
+      mobile.OnEnterEncounter(creatureForm.Initiative);
+      mobiles.push(mobile);
+    }
 
     setContext({
       ...context,
-      Mobiles: [...context.Mobiles, mobile]
+      Mobiles: [...context.Mobiles, ...mobiles]
     });
+    setCreatureForm({ Number: 1, Initiative: 0 });
+  }
+
+  const onCreatureNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const number = Number(e.target.value);
+
+    setCreatureForm({ ...creatureForm, Number: number });
+  }
+
+  const onCreatureInitiativeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const initiative = Number(e.target.value);
+
+    setCreatureForm({ ...creatureForm, Initiative: initiative });
   }
 
   return (
@@ -42,11 +62,21 @@ const Board: React.FunctionComponent = () => {
         <header className="head">Round: {context.Round}</header>
 
         <aside className="control">
+          <h3>Add creatures</h3>
+          <div>
+            <label htmlFor="add-creatures-count">Number:</label>
+            <input id="add-creatures-count" type="number" onChange={onCreatureNumberChange} value={creatureForm.Number} />
+          </div>
+          <div>
+            <label htmlFor="add-creatures-initiative">Initiative:</label>
+            <input id="add-creatures-initiative" type="number" onChange={onCreatureInitiativeChange} value={creatureForm.Initiative} />
+          </div>
           <AutoComplete
             placeholder="Name..."
             OnSearch={onSearchCreature}
             OnSelectItem={onSelectCreature}
           />
+          <hr />
         </aside>
 
         <aside className="initiative">
@@ -57,7 +87,7 @@ const Board: React.FunctionComponent = () => {
           SCREEN
         </section>
 
-        {selectedMobile && 
+        {selectedMobile &&
           <section className="selected-mobile">
             <MobileCard onClose={onDeselectCreature} Mobile={selectedMobile} />
           </section>}

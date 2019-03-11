@@ -122,8 +122,8 @@ export abstract class Mobile extends Entity {
     this.m_bonusActionUsed = false;
   }
 
-  public OnEnterEncounter() {
-    this.m_rolledInitative = Random.D20();
+  public OnEnterEncounter(rolledIniative: number | null = null) {
+    this.m_rolledInitative = rolledIniative || Random.D20();
   }
 }
 
